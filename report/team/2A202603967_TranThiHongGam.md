@@ -4,7 +4,7 @@
 
 - MSSV: 2A202603967
 - Nhóm: MTGD; lớp: L3B.
-- Email/GitHub cá nhân: chưa cung cấp.
+- Email/GitHub cá nhân: tranthihonggam290905@gmail.com
 
 ## 2. Phần việc phụ trách
 
