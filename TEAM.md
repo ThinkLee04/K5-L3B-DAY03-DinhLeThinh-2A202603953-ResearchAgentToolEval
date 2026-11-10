@@ -6,16 +6,15 @@
 - Lớp: L3B
 - Tên repo theo quy ước đề bài: `K5-L3B-DAY03-MTGD-ResearchAgentToolEval` (nhóm cần đối chiếu trước khi nộp).
 - Repo hiện tại: https://github.com/ThinkLee04/K5-L3B-DAY03-DinhLeThinh-2A202603953-ResearchAgentToolEval
-- Nhánh hiện tại: `gam`; HEAD lúc kiểm tra: `22c4269`. Chưa xác nhận nhánh nộp/commit chốt; các thay đổi CP5 chưa được tự động commit hoặc push.
-
+- Nhánh nộp: `main`, commit chốt:
 ## Thành viên
 
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
-| 1 | Đinh Lê Thịnh | 2A202603953 | Chưa cung cấp | Chưa xác nhận | CP2 — prompt và tool declaration |
-| 2 | Trần Thị Hồng Gấm | 2A202603967 | Chưa cung cấp | Chưa xác nhận | CP5 — UI, live chat và báo cáo |
-| 3 | Nguyễn Xuân Dương | 2A202603955 | Chưa cung cấp | Chưa xác nhận | CP4 — eval nhóm |
-| 4 | Trần Duy Mạnh | 2A202603998 | Chưa cung cấp | Chưa xác nhận | CP3 — tool mới và unit test |
+| 1 | Đinh Lê Thịnh | 2A202603953 | dinhlethinh137@gmail.com | ThinkLee04 | CP2 — prompt và tool declaration |
+| 2 | Trần Thị Hồng Gấm | 2A202603967 | tranthihonggam290905@gmail.com | Honggam1109  | CP5 — UI, live chat và báo cáo |
+| 3 | Nguyễn Xuân Dương | 2A202603955 | xuanduong20050808@gmail.com | xuanduong2k5 | CP4 — eval nhóm |
+| 4 | Trần Duy Mạnh | 2A202603998 | duymanhtran2004mkc2@gmail.com | TDM414 | CP3 — tool mới và unit test |
 
 ## Cá nhân
 
