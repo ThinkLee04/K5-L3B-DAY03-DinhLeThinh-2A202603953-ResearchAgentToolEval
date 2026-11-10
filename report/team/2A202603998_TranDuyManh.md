@@ -23,7 +23,6 @@ CP3 — tool mới và unit test theo phân công do nhóm cung cấp.
 - [test_tools_todo.py](../../starter_v0/tests/test_tools_todo.py), [output CP3](../../starter_v0/analysis/cp3_pytest.txt).
 - [B5a trong group report](group_report.md); routing được đo riêng ở CP4, không lấy unit test thay cho eval model.
 - Có hỗ trợ của Codex để viết implementation, schema, tài liệu và test. Cách tự kiểm tra cần thực hiện: chạy test deduplicate, giải thích happy path/input xấu/lỗi parser và vì sao không bỏ query khi so trùng.
-- Commit kỹ thuật cá nhân: cần thành viên dẫn commit thực tế trước khi nộp.
 
 ## 5. Tự đánh giá
 

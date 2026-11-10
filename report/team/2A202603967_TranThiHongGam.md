@@ -25,7 +25,6 @@ CP5 — UI, live chat và báo cáo theo phân công do nhóm cung cấp.
 - [Output pytest](../../starter_v0/analysis/cp5_pytest.txt), [A1/B4/B5a trong group report](group_report.md).
 - Có hỗ trợ của Codex để viết UI/test, vận hành CLI/tunnel và tổng hợp bằng chứng. Test UI dùng fake model chỉ là test offline; transcript được dẫn ở trên dùng model thật.
 - Cách tự kiểm tra cần thực hiện: chạy UI theo A1, thử câu hỏi mẫu và mở tool result/transcript để đối chiếu. Không diễn giải lỗi API là lấy dữ liệu thành công.
-- Commit kỹ thuật cá nhân: cần thành viên dẫn commit thực tế trước khi nộp.
 
 ## 5. Tự đánh giá
 
