@@ -1,0 +1,18 @@
+...................................................................sssss [ 74%]
+sssssssss................                                                [100%]
+=========================== short test summary info ===========================
+SKIPPED [1] tests\test_tools_todo.py:28: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:35: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:40: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:45: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:53: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:57: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:64: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:72: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:76: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:84: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:89: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:95: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:100: TODO CP3 (student): implement this test
+SKIPPED [1] tests\test_tools_todo.py:106: TODO CP3 (student): implement this test
+83 passed, 14 skipped in 5.58s

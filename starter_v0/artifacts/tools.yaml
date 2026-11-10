@@ -123,3 +123,23 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
+
+  # ---------------- CP3: new tool ----------------
+  - name: deduplicate
+    description: "Loại nguồn trùng URL từ các item đã có trước khi tổng hợp. Giữ item đầu tiên và thứ tự gốc; bỏ fragment và không phân biệt hoa/thường ở host khi so trùng, giữ riêng URL khác path/query. Không tìm kiếm, đọc trang, xác thực nguồn hoặc gộp bài theo nội dung. Chỉ dùng khi đã có items cần lọc; không bịa dữ liệu."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          description: "Danh sách item thực từ user/tool; mỗi item phải có URL HTTP(S) tuyệt đối. List rỗng hợp lệ; các field title/source/summary/section được giữ nguyên."
+          items:
+            type: object
+            properties:
+              url: {type: string, description: "URL HTTP(S) đầy đủ, không rỗng, không chứa thông tin đăng nhập."}
+              title: {type: string}
+              source: {type: string}
+              summary: {type: string}
+              section: {type: string}
+            required: [url]
+      required: [items]

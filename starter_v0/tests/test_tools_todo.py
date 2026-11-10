@@ -10,6 +10,8 @@ Rules:
 """
 from __future__ import annotations
 
+from copy import deepcopy
+
 import pytest
 
 from conftest import FakeResponse  # noqa: F401  (you will need it)
@@ -110,13 +112,74 @@ def test_policy_instruction_like_lines_go_to_untrusted_text() -> None:
 #   2. bad / missing input from the model (empty string, wrong type, out-of-enum value)
 #   3. failure path (missing key, HTTP error, timeout) -> returns error dict, does not raise
 
-def test_my_new_tool_happy_path() -> None:
-    pytest.skip(TODO)
+def test_deduplicate_keeps_first_source_and_original_order() -> None:
+    items = [
+        {"url": "https://EXAMPLE.com/article#intro", "title": "Bản đầu", "summary": "Giữ nguyên"},
+        {"url": "https://other.example/news", "title": "Nguồn khác"},
+        {"url": "https://example.com/article#end", "title": "Bản trùng"},
+    ]
+    original = deepcopy(items)
+
+    result = TOOL_FUNCTIONS["deduplicate"](items=items)
+
+    assert result == {
+        "tool": "deduplicate",
+        "items": [original[0], original[1]],
+        "input_count": 3,
+        "unique_count": 2,
+        "removed_count": 1,
+    }
+    assert items == original
 
 
-def test_my_new_tool_bad_input_from_model() -> None:
-    pytest.skip(TODO)
+@pytest.mark.parametrize("items", [
+    None,
+    "https://example.com/article",
+    {},
+    [None],
+    [{"url": 42}],
+    [{"url": ""}],
+    [{"title": "Thiếu URL"}],
+    [{"url": "/relative/path"}],
+])
+def test_deduplicate_rejects_bad_input_from_model(items) -> None:
+    result = TOOL_FUNCTIONS["deduplicate"](items=items)
+
+    assert result["tool"] == "deduplicate"
+    assert result["error"] == "ValueError"
+    assert result["message"]
+    assert "items" not in result
 
 
-def test_my_new_tool_failure_returns_error_dict() -> None:
-    pytest.skip(TODO)
+def test_deduplicate_parser_failure_returns_error_without_partial_items() -> None:
+    result = TOOL_FUNCTIONS["deduplicate"](items=[
+        {"url": "https://example.com/valid"},
+        {"url": "https://[broken"},
+    ])
+
+    assert result["tool"] == "deduplicate"
+    assert result["error"] == "ValueError"
+    assert "IPv6" in result["message"]
+    assert "items" not in result
+
+
+def test_deduplicate_empty_list_returns_zero_counts() -> None:
+    result = TOOL_FUNCTIONS["deduplicate"](items=[])
+
+    assert result["items"] == []
+    assert result["input_count"] == result["unique_count"] == result["removed_count"] == 0
+    assert "error" not in result
+
+
+def test_deduplicate_preserves_distinct_query_and_path_case() -> None:
+    items = [
+        {"url": "https://example.com/Paper?id=1"},
+        {"url": "https://example.com/Paper?id=2"},
+        {"url": "https://example.com/paper?id=1"},
+    ]
+
+    result = TOOL_FUNCTIONS["deduplicate"](items=items)
+
+    assert result["items"] == items
+    assert result["unique_count"] == 3
+    assert result["removed_count"] == 0

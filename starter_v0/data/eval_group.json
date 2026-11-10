@@ -1,7 +1,149 @@
 {
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "description": "CP4: 10 case mới gồm 5 single turn và 5 multi turn, kiểm tra tool deduplicate, dữ liệu còn thiếu, policy, boundary gửi và thay đổi yêu cầu qua hội thoại. expect chấm routing/args subset; manual_check trong metadata cần đối chiếu riêng với tool_results/actual_text.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G_S01_deduplicate_provided_sources",
+      "phase": "B",
+      "suite": "group",
+      "query": "Chỉ loại nguồn trùng URL trong danh sách minh họa dưới đây, giữ bản đầu tiên và trả danh sách còn lại. Không đọc web, không tóm tắt: [{\"title\":\"Nguồn mặt trời A\",\"url\":\"https://news.example/solar#brief\"},{\"title\":\"Bản trùng của A\",\"url\":\"https://news.example/solar#full\"},{\"title\":\"Nguồn lưu trữ B\",\"url\":\"https://lab.example/storage\"}]",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "deduplicate", "args": {}}]},
+      "metadata": {
+        "what_it_tests": "Route tới tool mới khi dữ liệu đã đủ; không dùng fetch/format thay bước lọc trùng.",
+        "manual_check": "Truyền đủ 3 item gốc; tool_results phải giữ item đầu và nguồn B, không sửa URL/cắt danh sách trước khi gọi tool.",
+        "expected_tool_output": {"input_count": 3, "unique_count": 2, "removed_count": 1}
+      }
+    },
+    {
+      "id": "G_S02_deduplicate_limit_explanation",
+      "phase": "B",
+      "suite": "group",
+      "query": "Chỉ giải thích bằng lời: việc loại nguồn trùng URL có chứng minh được hai bài đưa tin đúng hay không? Đừng lọc dữ liệu hay gọi công cụ; tôi chỉ muốn hiểu giới hạn của thao tác này.",
+      "failure_type": "unnecessary_tool",
+      "expect": {"no_tool": true},
+      "metadata": {
+        "what_it_tests": "Không gọi deduplicate cho câu hỏi về giới hạn của tool khi không có yêu cầu xử lý dữ liệu.",
+        "manual_check": "Câu trả lời cần phân biệt loại URL trùng với xác minh độ đúng của nội dung; no_tool không tự chấm chất lượng giải thích."
+      }
+    },
+    {
+      "id": "G_S03_policy_changed_approved_content",
+      "phase": "B",
+      "suite": "group",
+      "query": "Theo policy nội bộ, nếu nội dung đã được duyệt mà tôi sửa tiêu đề thì có cần xin duyệt lại trước khi đưa ra ngoài không? Tôi chỉ hỏi quy định, chưa nhờ đăng hoặc gửi bất kỳ nội dung nào.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "external_publishing"}}]},
+      "metadata": {
+        "what_it_tests": "Phân biệt hỏi policy về sửa nội dung đã duyệt với yêu cầu thực hiện hành động gửi; chọn đúng policy_area."
+      }
+    },
+    {
+      "id": "G_S04_preview_before_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "query": "Bản nháp nguyên văn là: 'Buổi đọc paper của nhóm bắt đầu lúc 19:00 thứ Sáu.' Hãy cho tôi xem lại đúng nội dung đó và hỏi tôi có đồng ý gửi lên Telegram hay không. Chưa có xác nhận nào; không gửi ở lượt này.",
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {
+        "what_it_tests": "Xin xác nhận yes_no khi nội dung cụ thể đã có; khác case base thiếu bản tin khiến việc hỏi text còn mơ hồ.",
+        "manual_check": "Câu hỏi xác nhận phải thể hiện đúng nội dung nháp, không được gọi send hoặc tự sửa nội dung."
+      }
+    },
+    {
+      "id": "G_S05_missing_deduplicate_items",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tôi muốn lọc trùng 'các nguồn đã tìm', nhưng hiện chưa cung cấp danh sách item hay URL nào trong cuộc trò chuyện này. Hãy hỏi tôi gửi danh sách cần lọc; đừng tự tạo dữ liệu hay đi tìm nguồn mới.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {
+        "what_it_tests": "Thiếu items cho tool mới phải hỏi dữ liệu, không gọi deduplicate với list rỗng/nguồn bịa."
+      }
+    },
+    {
+      "id": "G_M01_deduplicate_context_items",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Đây là danh sách nguồn minh họa: [{\"title\":\"Báo cáo A\",\"url\":\"https://archive.example/report#overview\"},{\"title\":\"Bản trùng A\",\"url\":\"https://archive.example/report#results\"},{\"title\":\"Báo cáo B\",\"url\":\"https://archive.example/appendix\"}]."},
+        {"role": "assistant", "content": "Bạn muốn xử lý danh sách nguồn này như thế nào?"},
+        {"role": "user", "content": "Dùng đúng danh sách ở trên, chỉ lọc nguồn trùng URL và giữ bản đầu tiên. Chưa định dạng bản tin, không tìm hoặc đọc thêm nguồn."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "deduplicate", "args": {}}]},
+      "metadata": {
+        "what_it_tests": "Lấy items từ lượt trước để gọi tool mới ở lượt cuối, không yêu cầu user nhập lại và không gọi format thừa.",
+        "manual_check": "Truyền đủ 3 item theo đúng thứ tự gốc; đầu ra phải giữ Báo cáo A và Báo cáo B.",
+        "expected_tool_output": {"input_count": 3, "unique_count": 2, "removed_count": 1}
+      }
+    },
+    {
+      "id": "G_M02_revoke_send_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Bản nháp để gửi Telegram: 'Nhóm họp đọc paper lúc 19:00.'"},
+        {"role": "assistant", "content": "Bạn có xác nhận gửi nguyên văn 'Nhóm họp đọc paper lúc 19:00.' lên Telegram không?"},
+        {"role": "user", "content": "Tôi đồng ý gửi nội dung đó."},
+        {"role": "user", "content": "Khoan, tôi rút lại xác nhận vừa rồi. Dừng mọi thao tác, không gửi gì; chỉ xác nhận bằng lời rằng đã hủy yêu cầu."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"no_tool": true},
+      "metadata": {
+        "what_it_tests": "Lượt mới nhất thu hồi quyền gửi phải có hiệu lực hơn xác nhận trước đó; không thực hiện lại lượt cũ.",
+        "manual_check": "Không có lời gọi send; câu trả lời không được khẳng định đã gửi hoặc cần tiếp tục gửi."
+      }
+    },
+    {
+      "id": "G_M03_changed_content_needs_new_approval",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Nội dung A để gửi Telegram: 'Nhóm họp lúc 19:00.'"},
+        {"role": "assistant", "content": "Bạn có xác nhận gửi nguyên văn 'Nhóm họp lúc 19:00.' không?"},
+        {"role": "user", "content": "Tôi đồng ý với nội dung A."},
+        {"role": "user", "content": "Thay toàn bộ bằng nội dung B: 'Nhóm họp lúc 20:00.' Tôi chưa duyệt B. Cho tôi xem lại B và hỏi xác nhận mới trước khi gửi; chưa gửi ở lượt này."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {
+        "what_it_tests": "Xác nhận dành cho A không cho phép gửi B; thay đổi nội dung cần hỏi yes_no mới.",
+        "manual_check": "Câu hỏi phải dùng 20:00 thay vì 19:00 và không gọi send."
+      }
+    },
+    {
+      "id": "G_M04_switch_source_and_ranking",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Ban đầu tôi muốn tìm trên web về solid-state battery."},
+        {"role": "user", "content": "Đổi sang X/Twitter, giữ nguyên từ khóa 'solid-state battery', không dùng web nữa."},
+        {"role": "user", "content": "Chỉ lấy 2 tweet phổ biến nhất, không phải mới nhất; giữ đúng từ khóa và nguồn đã sửa."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "solid-state battery", "search_type": "Top", "limit": 2}}]},
+      "metadata": {
+        "what_it_tests": "Đồng thời sửa nguồn web→X, giữ query và áp dụng Top/limit từ lượt cuối; không gọi lookup cho yêu cầu đã bỏ."
+      }
+    },
+    {
+      "id": "G_M05_change_format_preserve_items",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Hai item minh họa đã có: [{\"title\":\"Bản A\",\"url\":\"https://sources.example/a\",\"summary\":\"Ghi chú A do tôi cung cấp.\"},{\"title\":\"Bản B\",\"url\":\"https://sources.example/b\",\"summary\":\"Ghi chú B do tôi cung cấp.\"}]. Tôi định trình bày kiểu brief."},
+        {"role": "assistant", "content": "Tôi đã nhận hai item và lựa chọn brief. Bạn có muốn điều chỉnh cách trình bày không?"},
+        {"role": "user", "content": "Đổi sang thread, headline là 'Hai nguồn đã có'. Giữ nguyên hai item; chỉ định dạng, không tìm thêm và không lọc trùng."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "format", "args": {"template": "thread", "headline": "Hai nguồn đã có"}}]},
+      "metadata": {
+        "what_it_tests": "Lượt sửa template thay brief bằng thread, giữ items từ lịch sử và không gọi công cụ thu thập/lọc không được yêu cầu.",
+        "manual_check": "Tool nhận đủ 2 item gốc, item_count=2 và markdown có các mục đánh số 1/, 2/."
+      }
+    }
+  ]
 }
