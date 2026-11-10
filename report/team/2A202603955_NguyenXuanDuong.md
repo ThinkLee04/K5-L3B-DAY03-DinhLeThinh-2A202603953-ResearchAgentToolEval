@@ -23,7 +23,6 @@ CP4 — bộ eval nhóm và phân tích kết quả theo phân công do nhóm cu
 - [Run group](../../starter_v0/runs/v3_B_group_openrouter_20261110T194344933599.json), [B3 trong group report](group_report.md).
 - Có hỗ trợ của Codex để thiết kế case, kiểm tra cấu trúc, gọi eval và đọc run thật. Không chỉnh prompt/tools hoặc sửa kỳ vọng sau run để nâng điểm CP4.
 - Cách tự kiểm tra cần thực hiện: đếm 5+5, đối chiếu expect với actual_tool_calls và xem cả tool_results; giải thích giới hạn của no_tool và multi-turn evaluator.
-- Commit kỹ thuật cá nhân: cần thành viên dẫn commit thực tế trước khi nộp.
 
 ## 5. Tự đánh giá
 

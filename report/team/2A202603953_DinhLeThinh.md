@@ -23,7 +23,6 @@ CP2 — tối ưu system prompt và tool declaration, đọc lỗi và ghi versi
 - [Version log](../../starter_v0/artifacts/version_log.csv), [B1/B2 trong group report](group_report.md).
 - Có hỗ trợ của Codex để giải thích, chỉnh artifact, chạy đo và phân tích log. Các số liệu nêu trên có run thật trong repo; không phải số liệu mẫu.
 - Cách tự kiểm tra cần thực hiện: mở run được dẫn trong CSV, đối chiếu hash/summary/failures và giải thích một giả thuyết mỗi version.
-- Commit kỹ thuật cá nhân: cần thành viên dẫn commit thực tế trước khi nộp.
 
 ## 5. Tự đánh giá
 
