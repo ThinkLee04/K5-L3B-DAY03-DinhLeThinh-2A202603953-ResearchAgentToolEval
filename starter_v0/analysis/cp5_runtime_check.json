@@ -1,0 +1,35 @@
+{
+  "checked_at": "2026-11-10T20:45:58+07:00",
+  "http_checks": [
+    {
+      "url": "http://127.0.0.1:8501",
+      "status": 200,
+      "streamlit_html": true
+    },
+    {
+      "url": "http://127.0.0.1:8501/_stcore/health",
+      "status": 200,
+      "health": "ok"
+    },
+    {
+      "url": "https://complimentary-concert-sustainable-factors.trycloudflare.com",
+      "status": 200,
+      "streamlit_html": true
+    },
+    {
+      "url": "https://complimentary-concert-sustainable-factors.trycloudflare.com/_stcore/health",
+      "status": 200,
+      "health": "ok"
+    }
+  ],
+  "websocket_subprotocol": "streamlit",
+  "cli_transcript": "transcripts/v3_openrouter_20261110T195341244321.transcript.json",
+  "cli_turns": 5,
+  "external_tester_feedback": {
+    "source": "User confirmed a person outside the group tried the UI successfully",
+    "tested_previous_url": "https://portsmouth-louise-height-str.trycloudflare.com",
+    "current_url": "https://complimentary-concert-sustainable-factors.trycloudflare.com",
+    "reason_for_new_url": "Previous tunnel lost edge connection and Cloudflare reported Tunnel not found"
+  },
+  "browser_automation": "Stopped because the current Chrome URL could not be determined confidently; no further browser automation attempted"
+}
